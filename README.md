@@ -1,2 +1,2 @@
-# pricypto-telegram-bot
-Pricypto bot is built in Golang, is a telegram bot that sends price alert message to channel after ever 10 seconds.
+# Pricypto Telegram Bot
+Pricypto bot is built in Golang and is a telegram bot that sends price alert messages to the channel every 10 seconds.
