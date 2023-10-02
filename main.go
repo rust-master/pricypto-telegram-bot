@@ -28,8 +28,8 @@ func main() {
 
 	sendTopCoinsMessage(bot)
 
-	// Set up a timer to send the message every 1 minute
-	ticker := time.NewTicker(10 * time.Second)
+	// Set up a timer to send the message every 2 minute
+	ticker := time.NewTicker(2 * time.Minute)
 
 	// Use a goroutine to repeatedly send the message
 	go func() {
@@ -51,6 +51,7 @@ func sendTopCoinsMessage(bot *tgbotapi.BotAPI) {
 	urlDot := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=polkadot"
 	urlXlm := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=stellar"
 	urlAtom := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=cosmos"
+	urlBnb := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=binancecoin"
 
 	priceBtc, erre := fetchPriceData(urlBtc)
 	if erre != nil {
@@ -87,14 +88,20 @@ func sendTopCoinsMessage(bot *tgbotapi.BotAPI) {
 		log.Printf("Error price fetching: %v", erre)
 	}
 
+	priceBnb, erre := fetchPriceData(urlBnb)
+	if erre != nil {
+		log.Printf("Error price fetching: %v", erre)
+	}
+
 	// Prices with emojis and bold formatting
-	btcPrice := fmt.Sprintf("💰 *BTC*: $ %.2f", priceBtc[0].CurrentPrice)
-	ethPrice := fmt.Sprintf("💰 *ETH*: $ %.2f", priceEth[0].CurrentPrice)
-	solPrice := fmt.Sprintf("💰 *SOL*: $ %.2f", priceSol[0].CurrentPrice)
-	adaPrice := fmt.Sprintf("💰 *ADA*: $ %.2f", priceAda[0].CurrentPrice)
-	dotPrice := fmt.Sprintf("💰 *DOT*: $ %.2f", priceDot[0].CurrentPrice)
-	xlmPrice := fmt.Sprintf("💰 *XLM*: $ %.2f", priceXlm[0].CurrentPrice)
-	atomPrice := fmt.Sprintf("💰 *ATOM*: $ %.2f", priceAtom[0].CurrentPrice)
+	btcPrice := fmt.Sprintf("💰 *BTC*: $%.2f", priceBtc[0].CurrentPrice)
+	ethPrice := fmt.Sprintf("💰 *ETH*: $%.2f", priceEth[0].CurrentPrice)
+	solPrice := fmt.Sprintf("💰 *SOL*: $%.2f", priceSol[0].CurrentPrice)
+	adaPrice := fmt.Sprintf("💰 *ADA*: $%.2f", priceAda[0].CurrentPrice)
+	dotPrice := fmt.Sprintf("💰 *DOT*: $%.2f", priceDot[0].CurrentPrice)
+	xlmPrice := fmt.Sprintf("💰 *XLM*: $%.2f", priceXlm[0].CurrentPrice)
+	atomPrice := fmt.Sprintf("💰 *ATOM*: $%.2f", priceAtom[0].CurrentPrice)
+	bnbPrice := fmt.Sprintf("💰 *BNB*: $%.2f", priceBnb[0].CurrentPrice)
 
 	// Construct the message with Markdown formatting
 	messageFormat := fmt.Sprintf(`
@@ -107,9 +114,10 @@ func sendTopCoinsMessage(bot *tgbotapi.BotAPI) {
    %s
    %s
    %s
+   %s
 
    🚀 Stay tuned for more updates! 🌕
-   `, btcPrice, ethPrice, solPrice, adaPrice, dotPrice, xlmPrice, atomPrice)
+   `, btcPrice, ethPrice, solPrice, adaPrice, dotPrice, xlmPrice, atomPrice, bnbPrice)
 
 	msg := tgbotapi.NewMessageToChannel("@top_coins_price_alerts", messageFormat)
 	msg.ParseMode = "Markdown"
